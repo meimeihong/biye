@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			#box{
+				margin:150px auto;
+				padding:0px;
+				width:350px;
+				height:350px;
+				background:skyblue;
+				text-align: left;
+				padding: 5px;
+			}
+			input{
+				width:140px;
+				height:30px;
+				margin:10px 0px;
+			}
+			p{
+				width:100px;
+				height:30px;
+				line-height: 30px;
+				text-align: center;
+				cursor: pointer;
+				border:1px solid gainsboro;
+				display: inline-block;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			
+			用户名：<input type="text" name="" id="username" value="" placeholder="请输入邮箱"/>
+			<span id="usern" style="font-size:12px;"></span><br>
+			密码：&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" name="" id="password" value="" />
+			<span id="pass" style="font-size:12px;"></span><br>
+			验证码：<input type="text" name="" id="prov" value="" />
+			<p id="proving" href="" onclick="code()">获取验证码</p><br>
+			<input type="button" name="" id="" value="注册" onclick="reg()" style="margin:20px 100px ;"/>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript" src="./js/reglogin.js"></script>

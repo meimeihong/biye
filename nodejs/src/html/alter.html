@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			* {
+				margin: 0px;
+				padding: 0px;
+			}
+			
+			#add {
+				width: 800px;
+				height: 600px;
+				margin: 20px auto;
+				background: #DCDCDC;
+				text-align: center;
+			}
+			
+			#add input {
+				width: 350px;
+				height: 30px;
+				margin: 10px 0px;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div id="add">
+			<!--商品ID：<input type="text" name="" id="gid" value="" disabled="disabled"/><br> -->
+			商品名称：
+			<input type="text" name="" id="name" value="" /><br> 商品描述：
+			<input type="text" name="" id="bewrite" value="" /><br> 商品价格: <input type="text" name="" id="price" value="" /><br> 商品数量: <input type="text" name="" id="amount" value="" /><br> 商品分类: <input type="text" name="" id="type" value="" /><br>
+			<form enctype="multipart/form-data" method="post">
+				图片上传：<input type="file" name='image' id="imagelist">
+			</form>
+			<img style="width:280px;height:130px;"><br>
+			<button style="padding: 5px;" id="imgupload"> 上传图片</button>
+			<span class="imgl"></span><br>
+			<input type="button" name="" id="" value="修改商品信息" onclick="goodsupdate()" />
+		</div>
+	</body>
+
+</html>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript">
+	var server = 'http://127.0.0.1:3000';
+	var id = localStorage.getItem("updateid");
+	console.log(id)
+	//初始更新页面
+	$.post(server + "/api/goods/update", {
+		'id': id
+	}, function(res) {
+		var data = res.data[0];
+		console.log(data);
+//		$('#gid').val(data._id);
+		$('#name').val(data.name);
+		$('#bewrite').val(data.bewrite);
+		$('#price').val(data.price);
+		$('#amount').val(data.amount);
+		$('#type').val(data.type);
+		$('img').attr('src', data.img);
+		$('img').attr('data-src',data.img)
+	});
+	//图片上传
+	$('#imgupload').on('click',function(){
+		$('img').removeAttr('src');
+		$('img').removeAttr('data-src');
+		upload();
+	});
+	function goodsupdate(){
+		var id=$('#gid').val();
+		var name=$('#name').val();
+		var bewrite=$('#bewrite').val();
+		var price=$('#price').val();
+		var amount=$('#amount').val();
+		var type=$('#type').val();
+		var imgsrc=$('img')[0].dataset.src;
+		var time=new Date().getTime();
+//		var year=time.getFullYear();
+//		var month=time.getMonth();
+//		var dates=time.getDate();
+//		var hours=time.getHours() ;
+//		var times=year+'年'+month+'月'+dates+'日'+hours+'时';
+		$.post(server+'/api/goods/goodsupdate',
+		{'_id':id,'name':name,'bewrite':bewrite,'price':price,'amount':amount,'type':type,'time':time,'img':imgsrc},
+		function(res){
+			alert(res.msg);
+			if(res.err==0){
+				window.location.href=('http://localhost:3000/goods.html');
+			}
+			
+		});
+	}
+	function upload() {
+		var formData = new FormData() //创建
+		formData.append("test", $("#imagelist")[0].files[0])
+		console.log(formData.get("test"));
+		$.ajax({
+			type: "post",
+			url: server + "/api/upload/img",
+			cache: false,
+			contentType: false,
+			processData: false,
+			data: formData,
+			success: function(res) {
+				if(res.err == 0) {
+					$('img').attr('src', 'http://127.0.0.1:3000/' + res.paths);
+					$('img').attr('data-src', 'http://127.0.0.1:3000/' + res.paths)
+					$('.imgl').text(res.msg);
+				} else {
+					alert('上传错误');
+				}
+			}
+		});
+	}
+</script>

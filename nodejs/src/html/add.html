@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{margin:0px;padding:0px;}
+			#add{
+				width:800px;
+				height:600px;
+				margin: 20px auto;
+				background: #DCDCDC;
+				text-align: center;
+			}
+			#add input{
+				width:350px;
+				height:30px;
+				margin: 15px 0px;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<div id="add">
+			商品名称：<input type="text" name="" id="name" value="" /><br>
+			商品描述：<input type="text" name="" id="bewrite" value="" /><br>
+			商品价格: <input type="text" name="" id="price" value="" /><br>
+			商品数量: <input type="text" name="" id="amount" value="" /><br>
+			商品分类: <input type="text" name="" id="type" value="" /><br>
+			<form enctype="multipart/form-data" method="post">
+         		图片上传：<input type="file" name='image' id="imagelist">
+     		</form>
+     		<img style="width:280px;height:130px;"><br>
+     		<button style="padding: 5px;" onclick="upload()"> 上传图片</button>
+     		<span class="imgl"></span><br>
+     		<input type="button" name="" id="" value="添加商品信息" onclick="addgoods()"/>
+		</div>
+	</body>
+</html>
+<script type="text/javascript" src="./js/jquery.min.js"></script>
+<script type="text/javascript">
+	var server='http://127.0.0.1:3000';
+	//图片上传
+	function upload(){
+//	console.log(111)
+//  console.log($("#imagelist")[0].files)
+    var formData = new FormData()//创建
+//  console.log(formData)
+    formData.append("test",$("#imagelist")[0].files[0])  
+//  console.log(formData.get("test"));
+   $.ajax({
+   	type:"post",
+   	url:server+"/api/upload/img",
+   	cache: false,
+    contentType: false,
+    processData: false,
+   	data:formData,
+   	success:function(res){
+// 		console.log(res);
+   		if(res.err==0){
+   			$('img').attr('src','http://127.0.0.1:3000/'+res.paths);
+   			$('img').attr('data-src','http://127.0.0.1:3000/'+res.paths)
+   			$('.imgl').text(res.msg);
+   		}else{
+   			alert('上传错误');
+   		}
+   	}
+   });
+	}
+	//添加商品信息
+	function addgoods(){
+		var name=$('#name').val();
+		var bewrite=$('#bewrite').val();
+		var price=$('#price').val();
+		var amount=$('#amount').val();
+		var type=$('#type').val();
+		var imgsrc=$('img')[0].dataset.src;
+		var time=new Date().getTime();
+		$.post(server+'/api/goods/addgoods',
+		{'name':name,'bewrite':bewrite,'price':price,'amount':amount,'type':type,'time':time,'img':imgsrc},
+		function(res){
+			alert(res.msg);
+			console.log(res.msg);
+			console.log("w");
+			console.log(res);
+//		 	$('#name').val('');
+//		 	$('#bewrite').val('');
+//			$('#price').val('');
+//			$('#amount').val('');
+//			$('#type').val('');
+//			$('img').removeAttr('src');
+//			$('img').removeAttr('data-src');
+//			$('.imgl').text('');
+		});
+	}
+</script>
